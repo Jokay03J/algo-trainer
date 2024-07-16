@@ -25,6 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import { routes } from "types/routes";
 
 export const meta: MetaFunction = () => {
   return [
@@ -63,7 +64,6 @@ export default function Register() {
     email,
     password,
   }: z.infer<typeof formSchema>) {
-    console.log("test");
     if (!params.has("code")) return;
     // Register teacher
     await register(params.get("code")!, firstName, lastName, email, password);
@@ -100,7 +100,9 @@ export default function Register() {
       <section className="w-6/12 flex min-h-screen flex-col items-center justify-center">
         <h1 className="text-5xl font-bold">S'enregistrer</h1>
         <Form {...form}>
-          {!error ?? <Alert variant={"destructive"}>{error!.message}</Alert>}
+          {error ? (
+            <Alert variant={"destructive"}>{error.message}</Alert>
+          ) : null}
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-8 w-4/6"
@@ -176,7 +178,7 @@ export default function Register() {
         </Form>
         <Separator className="w-4/6 my-2" />
         <Button asChild variant={"secondary"} className="w-4/6">
-          <Link to={"/login"}>Se connecter</Link>
+          <Link to={routes.LOGIN}>Se connecter</Link>
         </Button>
       </section>
     </div>

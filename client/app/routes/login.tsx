@@ -18,6 +18,7 @@ import { useLogin } from "hooks/useLogin";
 import { Alert } from "~/components/ui/alert";
 import { Separator } from "~/components/ui/separator";
 import { Link } from "@remix-run/react";
+import { routes } from "types/routes";
 
 export const meta: MetaFunction = () => {
   return [
@@ -99,7 +100,7 @@ export default function Login() {
         </Form>
         <Separator className="w-4/6 my-2" />
         <Button asChild variant={"secondary"} className="w-4/6">
-          <Link to={"/register"}>S'enregistrer</Link>
+          <Link to={routes.REGISTER}>S'enregistrer</Link>
         </Button>
       </section>
     </div>
