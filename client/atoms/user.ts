@@ -1,4 +1,4 @@
-import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 
 export interface User {
   firstName: string | null;
@@ -7,9 +7,11 @@ export interface User {
   token: string | null;
 }
 
-export const userAtom = atom(<User>{
+export const DEFAULT_USER_VALUE = <User>{
   token: null,
   email: null,
   lastName: null,
   firstName: null,
-});
+};
+
+export const userAtom = atomWithStorage("user", <User>DEFAULT_USER_VALUE);

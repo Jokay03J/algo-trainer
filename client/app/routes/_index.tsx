@@ -1,4 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
+import { userAtom } from "atoms/user";
+import { useAtomValue } from "jotai";
 
 export const meta: MetaFunction = () => {
   return [
@@ -8,5 +10,6 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  return <div></div>;
+  const user = useAtomValue(userAtom);
+  return <div>{user.token ?? "pas de token"}</div>;
 }

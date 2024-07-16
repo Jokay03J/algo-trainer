@@ -4,12 +4,18 @@ import { useAtom } from "jotai";
 import { useState } from "react";
 
 /**
- * An hook for login user, return loading, error states and login function.
+ * An hook for register a teacher, return loading, error states and register function.
  */
-export function useLogin(): {
+export function useRegisterTeacher(): {
   isLoading: boolean;
   error: Error | null;
-  login: (email: string, password: string) => Promise<void>;
+  register: (
+    code: string,
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+  ) => Promise<void>;
 } {
   // Hook states
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -17,17 +23,26 @@ export function useLogin(): {
   const [user, setUser] = useAtom(userAtom);
   const navigate = useNavigate();
 
-  const login = async (email: string, password: string) => {
-    // Set loading as true and fetch login api endpoint
+  const register = async (
+    code: string,
+    first_name: string,
+    last_name: string,
+    email: string,
+    password: string,
+  ) => {
+    // Set loading as true and fetch register teacher api endpoint
     setIsLoading(true);
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/registerTeacher`,
+      {
+        method: "POST",
+        body: JSON.stringify({ code, first_name, last_name, email, password }),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
       },
-    });
+    );
     // Get data from the request
     const data = await res.json();
     // Set loading as false
@@ -44,5 +59,5 @@ export function useLogin(): {
     navigate("/");
   };
   // Return hook states and login function
-  return { isLoading, error, login };
+  return { isLoading, error, register };
 }
