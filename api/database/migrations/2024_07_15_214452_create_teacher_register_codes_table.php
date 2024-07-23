@@ -10,8 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create("register_codes", function (Blueprint $table) {
-            $table->id();
+        Schema::create("teacher_register_codes", function (Blueprint $table) {
+            $table->uuid("id")->primary();
             $table->string("name")->unique();
             $table->string("code")->unique();
             $table->timestamps();
