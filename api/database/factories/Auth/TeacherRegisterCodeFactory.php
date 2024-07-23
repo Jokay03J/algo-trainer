@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Auth;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\RegisterCode>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Auth\TeacherRegisterCode>
  */
-class RegisterCodeFactory extends Factory
+class TeacherRegisterCodeFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,7 @@ class RegisterCodeFactory extends Factory
     public function definition(): array
     {
         return [
-            "code" => fake()->lexify("??????"),
+            "code" => fake()->unique()->lexify("??????"),
             "name" => fake()->name(),
         ];
     }
