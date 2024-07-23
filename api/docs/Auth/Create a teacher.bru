@@ -1,0 +1,33 @@
+meta {
+  name: Create a teacher
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{host}}/registerTeacher
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "code": "ehouts",
+    "email": "test@test.org",
+    "password": "testtest",
+    "first_name": "First name exemple",
+    "last_name": "Last name exemple"
+  }
+}
+
+docs {
+  # Register a teacher
+  To create a teacher you must provide a register teacher code, you can found this inside *register_codes* table.
+  
+  ## 200
+  Return created teacher token.
+  ## 422
+  Return all error fields.
+  ## 403
+  Provided register code is invalid.
+}

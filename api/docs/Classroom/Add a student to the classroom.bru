@@ -1,0 +1,35 @@
+meta {
+  name: Add a student to the classroom
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{host}}/classroom/add
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "student_id": "9c9635ce-cd0d-4100-b02d-c0cfee919959",
+    "classroom_id": "9c963653-de24-470b-9682-16a13ffc674c"
+  }
+}
+
+docs {
+  # Add a student to a classroom
+  > To add a student to a classroom, the student must be attached to the teacher.
+  
+  ## 200
+  Student has been added to the classroom.
+  
+  ## 400
+  Return all errors fields.
+  
+  ## 403
+  The selected student is not attached to the current teacher or you not own the classroom.
+  
+  ## 419
+  The student is already inside the classroom.
+}

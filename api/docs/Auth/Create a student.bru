@@ -1,0 +1,30 @@
+meta {
+  name: Create a student
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{host}}/registerStudent
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "student@test.org",
+    "password": "password",
+    "first_name": "First name student",
+    "last_name": "Last name student"
+  }
+}
+
+docs {
+  # Register a student
+  A student can be created without code, but to access to classe's trains, he must be attached to the trainer.
+  
+  ## 200
+  Return created student token.
+  ## 422
+  Return all error fields.
+}

@@ -1,0 +1,18 @@
+meta {
+  name: Get all classrooms
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{host}}/classroom
+  body: none
+  auth: inherit
+}
+
+docs {
+  # Get all user classroom
+  
+  ## 200
+  Return all author classroom or where student is in classroom. 
+}

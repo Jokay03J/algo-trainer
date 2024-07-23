@@ -1,0 +1,29 @@
+meta {
+  name: Remove student from classroom
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{host}}/classroom/remove
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "student_id": "9c9635ce-cd0d-4100-b02d-c0cfee919959",
+    "classroom_id": "9c963653-de24-470b-9682-16a13ffc674c"
+  }
+}
+
+docs {
+  # Delete a student in classroom
+  > To do this you must own the classroom.
+  
+  ## 200
+  Student has been succefully removed from the classroom.
+  
+  ## 403
+  You don't own this classroom.
+}

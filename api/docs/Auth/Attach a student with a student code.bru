@@ -1,0 +1,32 @@
+meta {
+  name: Attach a student with a student code
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{host}}/attachStudent
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: 2|dTwi9DqYMbYWeg26t5pdHmaVJUNVCzNf6L45JYTo6fedf6c0
+}
+
+body:json {
+  {
+    "code": "4caf39c9-715e-40cd-913a-6a34c6230142"
+  }
+}
+
+docs {
+  # Attach student to a teacher
+  Only attached student to a teacher, teacher can add the student to the selected classe.
+  
+  ## 200
+  The selected student has succefully attached to the selected teacher.
+  
+  ## 419
+  The selected student has been already attached to the selected classe.
+}

@@ -1,0 +1,29 @@
+meta {
+  name: Create a classroom
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{host}}/classroom
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "A2 2024-2025"
+  }
+}
+
+docs {
+  # Create a classroom
+  
+  ## 400
+  Return all errors fields.
+  
+  ## 201
+  The classroom has been created, return created classroom id.
+  ## 403
+  Current authentificated user must a teacher.
+}

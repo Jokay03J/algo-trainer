@@ -1,0 +1,18 @@
+meta {
+  name: Create a student code
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{host}}/studentCode
+  body: none
+  auth: inherit
+}
+
+docs {
+  # Create a student code
+  You must be a teacher to create a student code.
+  
+  When your student will use this code, it will be attached to the creator of the student code.
+}

@@ -1,0 +1,22 @@
+meta {
+  name: Delete a classroom
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{host}}/classroom/9c9619d3-c494-4ec2-948b-5417552a7942/delete
+  body: none
+  auth: inherit
+}
+
+docs {
+  # Delete a classroom
+  
+  ## 404
+  Selected classroom is not found.
+  ## 204
+  The classroom has been deleted.
+  ## 403
+  Selected classroom owner is not the current authentified user.
+}

@@ -1,0 +1,28 @@
+meta {
+  name: Login a user or a teacher
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{host}}/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "test@example.com",
+    "password": "password"
+  }
+}
+
+docs {
+  # Login a teacher or a student
+  
+  ## 200
+  Return the token
+  ## 422
+  Return error fields
+  
+}
