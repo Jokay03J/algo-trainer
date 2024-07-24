@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\TrainController;
 use App\Http\Middleware\MustBeStudent;
 use App\Http\Middleware\MustBeTeacher;
 use Illuminate\Support\Facades\Route;
@@ -32,3 +33,10 @@ Route::controller(ClassroomController::class)
 Route::get("/classroom", [ClassroomController::class, "index"])->middleware(
     "auth:sanctum"
 );
+
+Route::controller(TrainController::class)
+    ->prefix("/train")
+    ->middleware("auth:sanctum")
+    ->group(function () {
+        Route::post("/", "create")->middleware(MustBeTeacher::class);
+    });
