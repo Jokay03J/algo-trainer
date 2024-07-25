@@ -1,0 +1,22 @@
+meta {
+  name: Delete a train
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{host}}/train/9c9b65ba-77f3-4c7d-a6d4-850900f23539
+  body: none
+  auth: inherit
+}
+
+docs {
+  # Delete a train
+  > You must be the teacher classroom.
+  
+  ## 204
+  The train has been successfully deleted.
+  
+  ## 403
+  You don't have the permission to delete this train.
+}

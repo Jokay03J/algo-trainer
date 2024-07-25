@@ -1,0 +1,28 @@
+meta {
+  name: Do a train
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{host}}/train/9c9b80b8-073f-437c-a835-2612c89cf341
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "result": 64,
+    "code": "let test = 'test'"
+  }
+}
+
+docs {
+  # Do a train
+  
+  ## 200
+  Return successful or not train.
+  
+  ## 403
+  You must be inside the classroom to do a train.
+}

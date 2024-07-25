@@ -1,0 +1,22 @@
+meta {
+  name: Get classroom trains
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{host}}/classroom/9c963653-de24-470b-9682-16a13ffc674c/trains
+  body: none
+  auth: inherit
+}
+
+docs {
+  # Get classroom trains
+  > To get trains you must be the teacher of this classroom or attached to this classroom.
+  
+  ## 200
+  Return trains.
+  
+  ## 403
+  You don't have access to this classroom trains.
+}

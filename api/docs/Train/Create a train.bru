@@ -7,13 +7,26 @@ meta {
 post {
   url: {{host}}/train
   body: json
-  auth: none
+  auth: inherit
 }
 
 body:json {
   {
-    "classroom_id": "",
+    "classroom_id": "9c963653-de24-470b-9682-16a13ffc674c",
     "content": "# Bool",
     "expected": "true"
   }
+}
+
+docs {
+  # Create a train
+  
+  ## 201
+  Train has been succefully created.
+  
+  ## 403
+  You must be the teacher classroom to create a train inside it.
+  
+  ## 422
+  Return all error fields.
 }
