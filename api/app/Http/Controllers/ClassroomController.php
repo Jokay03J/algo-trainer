@@ -8,6 +8,7 @@ use App\Http\Requests\Classroom\RemoveStudentRequest;
 use App\Models\AssociatedStudent;
 use App\Models\Classroom;
 use App\Models\ClassroomStudent;
+use App\Models\Train;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -109,7 +110,7 @@ class ClassroomController extends Controller
         // Check if classroom is owned by the current teacher
         $classroom = Classroom::find($request->input("classroom_id"));
         if (!$classroom || $classroom->teacher_id !== $request->user()->id) {
-            return response(["message" => "Unauthorized."], 403);
+            return response(["message" => "Forbidden."], 403);
         }
         // Get student classroom
         $classroomStudent = ClassroomStudent::where([
@@ -126,5 +127,36 @@ class ClassroomController extends Controller
         // Remove student from the classroom
         ClassroomStudent::destroy($classroomStudent->id);
         return response(["message" => "Removed"]);
+    }
+
+    public function trains(Request $request, Classroom $classroom)
+    {
+        // Check if user is a teacher and check if teacher classroom is current user
+        if (
+            $request->user()->type === "teacher" &&
+            $classroom->teacher_id === $request->user()->id
+        ) {
+            // Get trains by classroom id
+            $trains = Train::where("classroom_id", "=", $classroom->id)
+                ->get()
+                ->setVisible(["id", "content"]);
+            return response($trains);
+        }
+        // Otherwise we consider user as a student
+        // Get user classroom
+        $studentIsInClassroom = ClassroomStudent::where([
+            ["classroom_id", "=", $classroom->id],
+            ["student_id", "=", $request->user()->id],
+        ])->first();
+        // Check if student is in this classroom
+        if (!$studentIsInClassroom) {
+            return response(["message" => "Forbidden."], 403);
+        }
+        // Get trains by classroom id
+        $trains = Train::where("classroom_id", "=", $classroom->id)
+            ->get()
+            ->setVisible(["id", "content"]);
+
+        return response($trains);
     }
 }
