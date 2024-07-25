@@ -30,13 +30,20 @@ Route::controller(ClassroomController::class)
         Route::delete("/remove", "removeStudent");
         Route::delete("/{classroom}/delete", "destroy")->whereUuid("classroom");
     });
-Route::get("/classroom", [ClassroomController::class, "index"])->middleware(
-    "auth:sanctum"
-);
+
+Route::controller(ClassroomController::class)
+    ->prefix("/classroom")
+    ->middleware("auth:sanctum")
+    ->group(function () {
+        Route::get("/", "index");
+        Route::get("/{classroom}/trains", "trains");
+    });
 
 Route::controller(TrainController::class)
     ->prefix("/train")
     ->middleware("auth:sanctum")
     ->group(function () {
         Route::post("/", "create")->middleware(MustBeTeacher::class);
+        Route::delete("/{train}", "destroy")->middleware(MustBeTeacher::class);
+        Route::post("/{train}", "do");
     });
