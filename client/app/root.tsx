@@ -5,6 +5,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useNavigate,
 } from "@remix-run/react";
 import "./tailwind.css";
 import {
@@ -13,13 +14,20 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { Button } from "./components/ui/button";
-import { useAtom } from "jotai";
 import { DEFAULT_USER_VALUE, userAtom } from "atoms/user";
+import { useAtom } from "jotai";
 import { routes } from "types/routes";
+import { Button } from "./components/ui/button";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useAtom(userAtom);
+  const navigate = useNavigate();
+
+  function handleDisconnect() {
+    setUser(DEFAULT_USER_VALUE);
+    navigate("/");
+  }
   return (
     <html lang="fr">
       <head>
@@ -53,16 +61,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
                       <Link to={routes.CLASSES}>Mes classes</Link>
                     </Button>
                   </NavigationMenuItem>
-                  <NavigationMenuItem>
-                    <Button variant={"secondary"} asChild>
-                      <Link to={routes.STUDENTS}>Mes étudiants</Link>
-                    </Button>
-                  </NavigationMenuItem>
+                  {user.type === "teacher" ? (
+                    <NavigationMenuItem>
+                      <Button variant={"secondary"} asChild>
+                        <Link to={routes.STUDENTS}>Mes étudiants</Link>
+                      </Button>
+                    </NavigationMenuItem>
+                  ) : null}
                   <NavigationMenuItem>
                     <NavigationMenuLink>
-                      <Button onClick={() => setUser(DEFAULT_USER_VALUE)}>
-                        Se déconnecter
-                      </Button>
+                      <Button onClick={handleDisconnect}>Se déconnecter</Button>
                     </NavigationMenuLink>
                   </NavigationMenuItem>
                 </>
@@ -78,6 +86,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+const queryClient = new QueryClient();
+
 export default function App() {
-  return <Outlet />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Outlet />
+    </QueryClientProvider>
+  );
 }
