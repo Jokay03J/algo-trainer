@@ -129,7 +129,32 @@ class ClassroomController extends Controller
         return response(["message" => "Removed"]);
     }
 
-    public function trains(Request $request, Classroom $classroom)
+    public function students(Request $request, Classroom $classroom): Response
+    {
+        // Check if current is the teacher classroom
+        if ($request->user()->id !== $classroom->teacher_id) {
+            return response(["message" => "Forbidden."], 403);
+        }
+        // Get classroom student
+        $classroomStudents = ClassroomStudent::where(
+            "classroom_id",
+            "=",
+            $classroom->id
+        )->get();
+        // Get students detail
+        $students = $classroomStudents->map(function ($classroomStudent) {
+            return $classroomStudent->student->setVisible([
+                "id",
+                "first_name",
+                "last_name",
+                "email",
+            ]);
+        });
+        // Return students
+        return response($students->toArray());
+    }
+
+    public function trains(Request $request, Classroom $classroom): Response
     {
         // Check if user is a teacher and check if teacher classroom is current user
         if (
