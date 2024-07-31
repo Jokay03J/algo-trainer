@@ -6,15 +6,14 @@ import { useState } from "react";
 /**
  * An hook for register a teacher, return loading, error states and register function.
  */
-export function useRegisterTeacher(): {
+export function useRegisterStudent(): {
   isLoading: boolean;
   error: Error | null;
   register: (
-    code: string,
     firstName: string,
     lastName: string,
     email: string,
-    password: string,
+    password: string
   ) => Promise<void>;
 } {
   // Hook states
@@ -24,24 +23,23 @@ export function useRegisterTeacher(): {
   const navigate = useNavigate();
 
   const register = async (
-    code: string,
     first_name: string,
     last_name: string,
     email: string,
-    password: string,
+    password: string
   ) => {
     // Set loading as true and fetch register teacher api endpoint
     setIsLoading(true);
     const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/registerTeacher`,
+      `${import.meta.env.VITE_API_URL}/api/registerStudent`,
       {
         method: "POST",
-        body: JSON.stringify({ code, first_name, last_name, email, password }),
+        body: JSON.stringify({ first_name, last_name, email, password }),
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-      },
+      }
     );
     // Get data from the request
     const data = await res.json();
@@ -54,7 +52,7 @@ export function useRegisterTeacher(): {
       return;
     }
     // Set user token to the user state
-    setUser({ ...user, token: data.token });
+    setUser({ ...user, id: data.id, token: data.token });
     // Navigate to the home page
     navigate("/");
   };
