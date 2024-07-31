@@ -1,0 +1,21 @@
+meta {
+  name: Get classroom students
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{host}}/classroom/9c976fcc-b1ed-4d49-8cb4-1bd7d15e55b8/students
+  body: none
+  auth: inherit
+}
+
+docs {
+  # Get classroom students
+  
+  ## 403
+  You must be the teacher classroom.
+  
+  ## 200
+  Return students.
+}
