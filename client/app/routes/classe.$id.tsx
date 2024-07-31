@@ -1,21 +1,34 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Link } from "@remix-run/react";
-import { useGetClassrooms } from "hooks/useGetClassrooms";
-import { routes } from "types/routes";
+import { useParams } from "@remix-run/react";
+import { useGetClassroomStudent } from "hooks/useGetClassroomStudents";
+import { useRemoveClassroomStudent } from "hooks/useRemoveClassroomStudent";
+import { CircleX } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
-import { CircleX } from "lucide-react";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "~/components/ui/table";
 
-export default function Classes() {
-  const { data: classrooms, isLoading, isError } = useGetClassrooms();
+export default function Classroom() {
+  const params = useParams();
+  const {
+    data: students,
+    isLoading,
+    isError,
+  } = useGetClassroomStudent(params.id);
+  const { mutateAsync: removeStudent, isPending: isLoadingRemoveStudent } =
+    useRemoveClassroomStudent();
+
+  function handleRemove(studentId: string) {
+    // Remove student
+    removeStudent({ studentId, classroomId: params.id! });
+  }
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center w-full gap-2 my-3">
@@ -60,18 +73,26 @@ export default function Classes() {
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Nom</TableHead>
+            <TableHead className="w-[100px]">Prénom</TableHead>
+            <TableHead className="w-[100px]">Email</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {classrooms!.map((classroom, index) => (
+          {students!.map((student, index) => (
             <TableRow key={index}>
-              <TableCell className="font-medium">{classroom.name}</TableCell>
+              <TableCell className="font-medium">
+                {student.first_name}
+              </TableCell>
+              <TableCell className="font-medium">{student.last_name}</TableCell>
+              <TableCell className="font-medium">{student.email}</TableCell>
               <TableCell>
-                <Button asChild>
-                  <Link to={`${routes.CLASSE}/${classroom.id}`}>
-                    Voir les étudiants
-                  </Link>
+                <Button
+                  variant={"destructive"}
+                  disabled={isLoadingRemoveStudent}
+                  onClick={() => handleRemove(student.id)}
+                >
+                  Supprimer
                 </Button>
               </TableCell>
             </TableRow>

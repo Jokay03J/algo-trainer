@@ -12,12 +12,12 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Link, useSearchParams } from "@remix-run/react";
+import { useRegisterTeacher } from "hooks/useRegisterTeacher";
 import { useForm } from "react-hook-form";
+import { routes } from "types/routes";
 import { z } from "zod";
 import { Alert } from "~/components/ui/alert";
-import { Separator } from "~/components/ui/separator";
-import { Link, useSearchParams } from "@remix-run/react";
-import { useRegisterTeacher } from "hooks/useRegister";
 import {
   Card,
   CardContent,
@@ -25,7 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { routes } from "types/routes";
+import { Separator } from "~/components/ui/separator";
 
 export const meta: MetaFunction = () => {
   return [

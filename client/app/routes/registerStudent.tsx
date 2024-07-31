@@ -12,13 +12,14 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "@remix-run/react";
-import { useLogin } from "hooks/useLogin";
+import { Link, useSearchParams } from "@remix-run/react";
+import { useRegisterTeacher } from "hooks/useRegisterTeacher";
 import { useForm } from "react-hook-form";
 import { routes } from "types/routes";
 import { z } from "zod";
 import { Alert } from "~/components/ui/alert";
 import { Separator } from "~/components/ui/separator";
+import { useRegisterStudent } from "hooks/useRegisterStudent";
 
 export const meta: MetaFunction = () => {
   return [
@@ -29,36 +30,46 @@ export const meta: MetaFunction = () => {
 
 // Create zod form validation schema
 const formSchema = z.object({
+  firstName: z.string().min(1, { message: "Le prénom est requis" }),
+  lastName: z.string().min(1, { message: "Le nom de famille est requis" }),
   email: z.string().email({ message: "L'email doit être valide" }),
   password: z
     .string({ message: "Le mot de passe est requis" })
     .min(6, { message: "Le mot de passe doit faire au moins 6 caractères" }),
 });
 
-export default function Login() {
-  const { isLoading, error, login } = useLogin();
+export default function Register() {
+  const { isLoading, error, register } = useRegisterStudent();
   // Create form from form schema
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
     },
   });
 
-  async function onSubmit({ email, password }: z.infer<typeof formSchema>) {
-    await login(email, password);
+  async function onSubmit({
+    firstName,
+    lastName,
+    email,
+    password,
+  }: z.infer<typeof formSchema>) {
+    // Register teacher
+    await register(firstName, lastName, email, password);
   }
 
   return (
     <div className="flex">
-      <div className="w-6/12 h-screen bg-black flex flex-col items-center justify-center text-white">
+      <div className="w-6/12 min-h-screen bg-black flex flex-col items-center justify-center text-white">
         <p className="text-4xl font-bold">
-          Faite monter vos élèves en comptétence
+          Faite monter vos élèves en compétence
         </p>
       </div>
-      <section className="w-6/12 flex flex-col items-center justify-center">
-        <h1 className="text-5xl font-bold">Se connecter</h1>
+      <section className="w-6/12 flex min-h-screen flex-col items-center justify-center">
+        <h1 className="text-5xl font-bold">S'enregistrer</h1>
         <Form {...form}>
           {error ? (
             <Alert variant={"destructive"}>{error.message}</Alert>
@@ -67,6 +78,40 @@ export default function Login() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-8 w-4/6"
           >
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Prénom</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Votre prénom..."
+                      autoComplete="cc-given-name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nom</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Votre nom..."
+                      autoComplete="cc-name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"
@@ -87,27 +132,25 @@ export default function Login() {
                 <FormItem>
                   <FormLabel>Mot de passe</FormLabel>
                   <FormControl>
-                    <Input placeholder="Votre mot de passe..." {...field} />
+                    <Input
+                      placeholder="Votre mot de passe..."
+                      type="password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button type="submit" disabled={isLoading} className="w-full">
-              Se connecter
+              S'enregistrer
             </Button>
           </form>
         </Form>
         <Separator className="w-4/6 my-2" />
-        <div className="flex items-center gap-1">
-          <Button asChild variant={"secondary"} className="w-4/6">
-            <Link to={routes.REGISTER_TEACHER}>enregistrer un professeur</Link>
-          </Button>
-          ou
-          <Button asChild variant={"secondary"} className="w-4/6">
-            <Link to={routes.REGISTER_STUDENT}>enregistrer un étudiant</Link>
-          </Button>
-        </div>
+        <Button asChild variant={"secondary"} className="w-4/6">
+          <Link to={routes.LOGIN}>Se connecter</Link>
+        </Button>
       </section>
     </div>
   );
