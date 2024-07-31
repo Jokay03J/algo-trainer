@@ -25,6 +25,7 @@ Route::controller(ClassroomController::class)
     ->prefix("/classroom")
     ->middleware(["auth:sanctum", MustBeTeacher::class])
     ->group(function () {
+        Route::get("/{classroom}/students", "students")->whereUuid("classroom");
         Route::post("/", "create");
         Route::post("/add", "addStudent");
         Route::delete("/remove", "removeStudent");
