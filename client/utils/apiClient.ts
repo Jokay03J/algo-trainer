@@ -6,16 +6,16 @@ type Config = {
 };
 
 export class apiClient {
-  static get(config: Config) {
+  static get<T>(config: Config): Promise<T> {
     return makeGeneric("GET", config);
   }
-  static post(config: Config) {
+  static post<T>(config: Config): Promise<T> {
     return makeGeneric("POST", config);
   }
-  static delete(config: Config) {
+  static delete<T>(config: Config): Promise<T> {
     return makeGeneric("DELETE", config);
   }
-  static patch(config: Config) {
+  static patch<T>(config: Config): Promise<T> {
     return makeGeneric("PATCH", config);
   }
 }
@@ -23,17 +23,23 @@ export class apiClient {
 /**
  * Make the fetch request from config.
  */
-async function makeGeneric(method: string, config: Config): Promise<any> {
-  return fetch(
+async function makeGeneric<T>(method: string, config: Config): Promise<T> {
+  const response = await fetch(
     `${import.meta.env.VITE_API_URL}/api/${config.url}${constructParams(
       config.params
     )}`,
     {
       method,
       body: JSON.stringify(config.body),
-      headers: config.headers as Headers | undefined,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        ...config.headers,
+      },
     }
-  ).then((r) => r.json());
+  );
+  if (!response.ok) throw new Error(response.statusText);
+  return await response.json();
 }
 
 /**

@@ -13,6 +13,7 @@ import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
 import { CircleX } from "lucide-react";
+import { hasRights, Rights } from "utils/hasRight";
 
 export default function Classes() {
   const { data: classrooms, isLoading, isError } = useGetClassrooms();
@@ -54,8 +55,15 @@ export default function Classes() {
     );
   }
 
+  console.log(isError);
+
   return (
     <div className="flex flex-col items-center">
+      {hasRights(Rights.canCreateClassroom) && (
+        <Button asChild>
+          <Link to={routes.NEW_CLASSROOM}>Crée une classe</Link>
+        </Button>
+      )}
       <Table className="w-fit">
         <TableHeader>
           <TableRow>

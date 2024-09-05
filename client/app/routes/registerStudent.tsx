@@ -12,14 +12,15 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useSearchParams } from "@remix-run/react";
-import { useRegisterTeacher } from "hooks/useRegisterTeacher";
+import { Link, useNavigate } from "@remix-run/react";
 import { useForm } from "react-hook-form";
 import { routes } from "types/routes";
 import { z } from "zod";
 import { Alert } from "~/components/ui/alert";
 import { Separator } from "~/components/ui/separator";
 import { useRegisterStudent } from "hooks/useRegisterStudent";
+import LoadingButton from "~/components/common/LoadingButton";
+import { useUserStore } from "stores/user";
 
 export const meta: MetaFunction = () => {
   return [
@@ -39,7 +40,7 @@ const formSchema = z.object({
 });
 
 export default function Register() {
-  const { isLoading, error, register } = useRegisterStudent();
+  const { isPending, error, mutateAsync } = useRegisterStudent();
   // Create form from form schema
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,6 +51,8 @@ export default function Register() {
       password: "",
     },
   });
+  const setUser = useUserStore((state) => state.setUser);
+  const navigate = useNavigate();
 
   async function onSubmit({
     firstName,
@@ -57,8 +60,15 @@ export default function Register() {
     email,
     password,
   }: z.infer<typeof formSchema>) {
-    // Register teacher
-    await register(firstName, lastName, email, password);
+    // Register student
+    const { id, token, type } = await mutateAsync({
+      firstName,
+      lastName,
+      email,
+      password,
+    });
+    setUser({ id, token, type });
+    navigate(routes.HOME);
   }
 
   return (
@@ -142,9 +152,9 @@ export default function Register() {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isLoading} className="w-full">
+            <LoadingButton type="submit" loading={isPending} className="w-full">
               S'enregistrer
-            </Button>
+            </LoadingButton>
           </form>
         </Form>
         <Separator className="w-4/6 my-2" />

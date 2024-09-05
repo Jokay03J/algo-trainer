@@ -1,9 +1,32 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "@remix-run/react";
+import { useAddStudentToClassroom } from "hooks/useAddStudentToClassroom";
 import { useGetClassroomStudent } from "hooks/useGetClassroomStudents";
 import { useRemoveClassroomStudent } from "hooks/useRemoveClassroomStudent";
 import { CircleX } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { hasRights, Rights } from "utils/hasRight";
+import { z } from "zod";
+import LoadingButton from "~/components/common/LoadingButton";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "~/components/ui/form";
+import { Input } from "~/components/ui/input";
 import { Skeleton } from "~/components/ui/skeleton";
 import {
   Table,
@@ -14,6 +37,11 @@ import {
   TableCell,
 } from "~/components/ui/table";
 
+// Create zod form validation schema
+const formSchema = z.object({
+  id: z.string(),
+});
+
 export default function Classroom() {
   const params = useParams();
   const {
@@ -23,10 +51,22 @@ export default function Classroom() {
   } = useGetClassroomStudent(params.id);
   const { mutateAsync: removeStudent, isPending: isLoadingRemoveStudent } =
     useRemoveClassroomStudent();
+  const { mutateAsync: addStudent, isPending: isPendingAddStudent } =
+    useAddStudentToClassroom();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      id: "",
+    },
+  });
 
   function handleRemove(studentId: string) {
     // Remove student
     removeStudent({ studentId, classroomId: params.id! });
+  }
+
+  async function onSubmit({ id }: z.infer<typeof formSchema>) {
+    await addStudent({ classroomId: params.id!, studentId: id });
   }
 
   if (isLoading) {
@@ -69,6 +109,48 @@ export default function Classroom() {
 
   return (
     <div className="flex flex-col items-center">
+      {hasRights(Rights.canManageStudents) ? (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="my-2">Ajouter un étudiant</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Ajouter un étudiant</DialogTitle>
+              <DialogDescription>
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-8 w-full"
+                  >
+                    <FormField
+                      control={form.control}
+                      name="id"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Votre email..." {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <LoadingButton
+                      type="submit"
+                      loading={isPendingAddStudent}
+                      className="w-full"
+                    >
+                      Ajouter
+                    </LoadingButton>
+                  </form>
+                </Form>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      ) : null}
       <Table className="w-fit">
         <TableHeader>
           <TableRow>

@@ -14,19 +14,22 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { DEFAULT_USER_VALUE, userAtom } from "atoms/user";
-import { useAtom } from "jotai";
+import { DEFAULT_USER_VALUE, useUserStore } from "stores/user";
+import { useShallow } from "zustand/react/shallow";
 import { routes } from "types/routes";
 import { Button } from "./components/ui/button";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { hasRights, Rights } from "utils/hasRight";
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useAtom(userAtom);
+  const [user, setUser] = useUserStore(
+    useShallow((state) => [state.user, state.setUser])
+  );
   const navigate = useNavigate();
 
   function handleDisconnect() {
     setUser(DEFAULT_USER_VALUE);
-    navigate("/");
+    navigate(routes.HOME);
   }
   return (
     <html lang="fr">
@@ -61,7 +64,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                       <Link to={routes.CLASSES}>Mes classes</Link>
                     </Button>
                   </NavigationMenuItem>
-                  {user.type === "teacher" ? (
+                  {hasRights(Rights.canViewStudent) ? (
                     <NavigationMenuItem>
                       <Button variant={"secondary"} asChild>
                         <Link to={routes.STUDENTS}>Mes étudiants</Link>

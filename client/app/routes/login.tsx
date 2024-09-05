@@ -12,13 +12,15 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "@remix-run/react";
+import { Link, useNavigate } from "@remix-run/react";
 import { useLogin } from "hooks/useLogin";
 import { useForm } from "react-hook-form";
 import { routes } from "types/routes";
 import { z } from "zod";
 import { Alert } from "~/components/ui/alert";
 import { Separator } from "~/components/ui/separator";
+import LoadingButton from "~/components/common/LoadingButton";
+import { useUserStore } from "stores/user";
 
 export const meta: MetaFunction = () => {
   return [
@@ -36,7 +38,7 @@ const formSchema = z.object({
 });
 
 export default function Login() {
-  const { isLoading, error, login } = useLogin();
+  const { isPending, error, mutateAsync } = useLogin();
   // Create form from form schema
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,9 +47,13 @@ export default function Login() {
       password: "",
     },
   });
+  const setUser = useUserStore((store) => store.setUser);
+  const navigate = useNavigate();
 
   async function onSubmit({ email, password }: z.infer<typeof formSchema>) {
-    await login(email, password);
+    const { id, token, type } = await mutateAsync({ email, password });
+    setUser({ id, token, type });
+    navigate(routes.CLASSES);
   }
 
   return (
@@ -61,7 +67,9 @@ export default function Login() {
         <h1 className="text-5xl font-bold">Se connecter</h1>
         <Form {...form}>
           {error ? (
-            <Alert variant={"destructive"}>{error.message}</Alert>
+            <Alert variant={"destructive"} className="w-4/6 my-2">
+              {error.message}
+            </Alert>
           ) : null}
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -93,9 +101,9 @@ export default function Login() {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isLoading} className="w-full">
+            <LoadingButton type="submit" loading={isPending} className="w-full">
               Se connecter
-            </Button>
+            </LoadingButton>
           </form>
         </Form>
         <Separator className="w-4/6 my-2" />
