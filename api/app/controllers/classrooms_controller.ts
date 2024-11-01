@@ -1,6 +1,13 @@
+import AlreadyExistException from '#exceptions/classrooms/already_exist_exception'
+import NotFoundException from '#exceptions/classrooms/not_found_exception'
+import UnauthorizedException from '#exceptions/classrooms/unauthorized_exception'
 import Classroom from '#models/classroom'
 import User from '#models/user'
-import { createClassroomValidator, inviteStudentValidator } from '#validators/classroom'
+import {
+  createClassroomValidator,
+  inviteStudentValidator,
+  updateClassroomValidator,
+} from '#validators/classroom'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class ClassroomsController {
@@ -43,24 +50,46 @@ export default class ClassroomsController {
 
     const classroom = await Classroom.find(params.id)
     const user = await User.findBy('email', payload.email)
-    if (!classroom || !user) throw new Error('Not found') // TODO: make excepetion
+    if (!classroom || !user) throw new NotFoundException()
     const exist = await classroom
       .related('students')
       .pivotQuery()
       .where('user_id', user.id)
       .where('classroom_id', classroom.id)
       .first()
-    if (exist) throw new Error('Already exist !') // TODO: this too
+    if (exist) throw new AlreadyExistException()
     await classroom.related('students').attach([user.id])
+  }
+
+  async removeInvite({ params, auth }: HttpContext) {
+    const classroom = await Classroom.find(params.id)
+    if (!classroom) throw new NotFoundException()
+    if (auth.user?.id !== classroom.authorId) throw new UnauthorizedException()
+    await classroom.related('students').detach([params.studentId])
   }
 
   /**
    * Handle form submission for the edit action
    */
-  // async update({ params, request }: HttpContext) {}
+  async update({ params, request, auth }: HttpContext) {
+    const { name } = await request.validateUsing(updateClassroomValidator)
+    const classroom = await Classroom.find(params.id)
+    if (!classroom) throw new NotFoundException()
+
+    if (classroom.authorId !== auth.user?.id) throw new UnauthorizedException()
+
+    await classroom.merge({ name }).save()
+    return classroom
+  }
 
   /**
    * Delete record
    */
-  // async destroy({ params }: HttpContext) {}
+  async destroy({ params, auth }: HttpContext) {
+    const classroom = await Classroom.find(params.id)
+    if (!classroom) throw new NotFoundException()
+
+    if (classroom.authorId !== auth.user?.id) throw new UnauthorizedException()
+    await classroom.delete()
+  }
 }
