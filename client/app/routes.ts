@@ -6,9 +6,15 @@ export const routes: RouteConfig = [
     index("routes/home.tsx"),
     ...prefix("dashboard", [
       index("routes/dashboard.tsx"),
-      route("classrooms/:id", "routes/dashboard/classroom.tsx"),
-      route("classrooms", "routes/dashboard/classrooms.tsx"),
       route("preferences", "routes/dashboard/preferences.tsx"),
+      ...prefix("classrooms", [
+        index("routes/dashboard/classrooms.tsx"),
+        route(":id", "routes/dashboard/classroom.tsx"),
+        route(":id/edit", "routes/dashboard/classroom/edit.tsx"),
+        ...prefix(":id/exercises", [
+          route("new", "routes/dashboard/classroom/exercises/new.tsx"),
+        ]),
+      ]),
     ]),
   ]),
   ...prefix("auth", [

@@ -1,6 +1,7 @@
 import {
   ArrowLeftIcon,
   BarChartIcon,
+  MixerVerticalIcon,
   Pencil2Icon,
   PlusIcon,
   QuestionMarkCircledIcon,
@@ -41,6 +42,7 @@ import { Input } from "~/components/ui/input";
 import { useInviteStudent } from "~/hooks/useInviteStudent";
 import { Alert } from "~/components/ui/alert";
 import { useState } from "react";
+import { useRemoveInviteStudent } from "~/hooks/useRemoveInviteStudent";
 
 const inviteStudentSchema = z.object({
   email: z.string().email().max(255),
@@ -54,8 +56,11 @@ const ClassroomPage = () => {
     mutateAsync: inviteStudent,
     isPending: inviteStudentLoading,
     error: inviteStudentError,
-    isError: inviteStudentIsError,
   } = useInviteStudent();
+  const {
+    mutateAsync: removeInviteStudent,
+    isPending: removeInviteStudentLoading,
+  } = useRemoveInviteStudent();
   const inviteStudentForm = useForm<z.infer<typeof inviteStudentSchema>>({
     resolver: zodResolver(inviteStudentSchema),
     defaultValues: {
@@ -91,8 +96,13 @@ const ClassroomPage = () => {
           </Link>
         </Button>
         <h1 className="text-3xl font-bold">{data?.name}</h1>
+        <Button asChild>
+          <Link to={"edit"}>
+            <MixerVerticalIcon />
+          </Link>
+        </Button>
       </div>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-2 my-2">
         <Card>
           <CardHeader className="flex justify-between items-center flex-row">
             <CardTitle>Élèves</CardTitle>
@@ -161,7 +171,13 @@ const ClassroomPage = () => {
                   </div>
                   <Button
                     variant={"destructive"}
-                    onClick={() => console.log("TODO: make supress")}
+                    disabled={removeInviteStudentLoading}
+                    onClick={() =>
+                      removeInviteStudent({
+                        classroomId: params.id!,
+                        studentId: student.id,
+                      })
+                    }
                   >
                     <TrashIcon />
                   </Button>
@@ -187,8 +203,10 @@ const ClassroomPage = () => {
         <Card>
           <CardHeader className="flex justify-between items-center flex-row">
             <CardTitle>Exercices</CardTitle>
-            <Button variant={"secondary"} className="mt-0">
-              <PlusIcon />
+            <Button variant={"secondary"} className="mt-0" asChild>
+              <Link to={"exercises/new"}>
+                <PlusIcon />
+              </Link>
             </Button>
           </CardHeader>
           <CardContent>
@@ -200,9 +218,6 @@ const ClassroomPage = () => {
                 </Button>
                 <Button variant={"outline"}>
                   <Pencil2Icon />
-                </Button>
-                <Button variant={"destructive"}>
-                  <TrashIcon />
                 </Button>
               </div>
             </div>
