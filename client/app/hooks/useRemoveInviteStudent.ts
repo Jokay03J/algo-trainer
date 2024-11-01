@@ -1,25 +1,24 @@
 import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "react-router";
 import { queryClient } from "~/root";
-import { Token, useAuthStore, User } from "~/stores/auth";
+import { useAuthStore } from "~/stores/auth";
 import { GET_CLASSROOM_KEYS } from "./useGetClassroom";
 
-const inviteStudent = async ({
+const removeInviteStudent = async ({
   classroomId,
-  email,
+  studentId,
 }: {
   classroomId: string;
-  email: string;
+  studentId: string;
 }): Promise<boolean> => {
   const { token } = useAuthStore.getState();
   if (!token) throw new Error("Invalid token");
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/classrooms/${classroomId}/invite`,
+    `${
+      import.meta.env.VITE_API_URL
+    }/classrooms/${classroomId}/invite/${studentId}`,
     {
-      method: "POST",
-      body: JSON.stringify({
-        email,
-      }),
+      method: "DELETE",
       headers: {
         Authorization: `Bearer ${token.token}`,
         "Content-Type": "application/json",
@@ -30,13 +29,12 @@ const inviteStudent = async ({
   return res.ok;
 };
 
-export const INVITE_STUDENT_KEYS = ["invite_student"];
+export const REMOVE_INVITE_STUDENT_KEYS = ["remove_invite_student"];
 
-export const useInviteStudent = () => {
-  const [params] = useSearchParams();
+export const useRemoveInviteStudent = () => {
   const { data, mutateAsync, isError, isPending, error } = useMutation({
-    mutationKey: INVITE_STUDENT_KEYS,
-    mutationFn: inviteStudent,
+    mutationKey: REMOVE_INVITE_STUDENT_KEYS,
+    mutationFn: removeInviteStudent,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: GET_CLASSROOM_KEYS });
     },
