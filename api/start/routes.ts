@@ -11,11 +11,10 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 import AutoSwagger from 'adonis-autoswagger/dist/index.js'
 import swagger from '#config/swagger'
-const AuthController = async () => await import('#controllers/auth_controller')
-const ClassroomsController = async () => await import('#controllers/classrooms_controller')
 
 router
   .group(() => {
+    const AuthController = async () => await import('#controllers/auth_controller')
     router.get('github/redirect', [AuthController, 'redirect'])
     router.get('github/callback', [AuthController, 'callback'])
   })
@@ -23,11 +22,16 @@ router
 
 router
   .group(() => {
+    const ClassroomsController = async () => await import('#controllers/classrooms_controller')
+
     router
       .group(() => {
-        router.post('/', [ClassroomsController, 'store'])
+        // classroom invite
         router.post('/:id/invite', [ClassroomsController, 'inviteStudent'])
         router.delete('/:id/invite/:studentId', [ClassroomsController, 'removeInvite'])
+
+        // classrooms CRUD
+        router.post('/', [ClassroomsController, 'store'])
         router.put('/:id', [ClassroomsController, 'update'])
         router.delete('/:id', [ClassroomsController, 'destroy'])
       })
@@ -38,14 +42,29 @@ router
   .prefix('classrooms')
   .use(middleware.auth())
 
-// returns swagger in YAML
+router
+  .group(() => {
+    const ExercisesController = async () => await import('#controllers/exercises_controller')
+
+    router
+      .group(() => {
+        router.post('/', [ExercisesController, 'store'])
+        router.put('/:exerciseId', [ExercisesController, 'update'])
+        router.delete('/:exerciseId', [ExercisesController, 'destroy'])
+      })
+      .middleware(middleware.mustBeTeacher())
+
+    router.group(() => {
+      router.get('/:exerciseId', [ExercisesController, 'show'])
+    })
+  })
+  .prefix('classrooms/:id/exercises')
+  .middleware(middleware.auth())
+
 router.get('/swagger', async () => {
   return AutoSwagger.default.docs(router.toJSON(), swagger)
 })
 
-// Renders Swagger-UI and passes YAML-output of /swagger
 router.get('/docs', async () => {
   return AutoSwagger.default.ui('/swagger', swagger)
-  // return AutoSwagger.default.scalar("/swagger"); to use Scalar instead
-  // return AutoSwagger.default.rapidoc("/swagger", "view"); to use RapiDoc instead (pass "view" default, or "read" to change the render-style)
 })
