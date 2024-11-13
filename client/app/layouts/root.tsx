@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router";
+import { Link, Outlet, useNavigate } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
@@ -14,11 +14,14 @@ import { useAuthStore } from "~/stores/auth";
 
 const RootLayout = () => {
   const { user, setToken, setUser } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     setToken(null);
     setUser(null);
+    navigate("/");
   };
+
   return (
     <>
       <div className="w-full p-3 flex justify-between items-center shadow-md">
