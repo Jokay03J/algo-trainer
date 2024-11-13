@@ -30,7 +30,7 @@ const updateClassroom = async ({
   return res.ok;
 };
 
-export const UPDATE_CLASSROOM_KEYS = ["remove_invite_student"];
+export const UPDATE_CLASSROOM_KEYS = ["removeInviteStudent"];
 
 export const useUpdateClassroom = () => {
   const { data, mutateAsync, isError, isPending, error } = useMutation({

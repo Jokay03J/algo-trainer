@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { useSearchParams } from "react-router";
 import { queryClient } from "~/root";
-import { Token, useAuthStore, User } from "~/stores/auth";
+import { useAuthStore } from "~/stores/auth";
 import { GET_CLASSROOM_KEYS } from "./useGetClassroom";
 
 const inviteStudent = async ({
@@ -33,14 +32,11 @@ const inviteStudent = async ({
 export const INVITE_STUDENT_KEYS = ["invite_student"];
 
 export const useInviteStudent = () => {
-  const [params] = useSearchParams();
-  const { data, mutateAsync, isError, isPending, error } = useMutation({
+  return useMutation({
     mutationKey: INVITE_STUDENT_KEYS,
     mutationFn: inviteStudent,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: GET_CLASSROOM_KEYS });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: GET_CLASSROOM_KEYS });
     },
   });
-
-  return { data, isError, isPending, mutateAsync, error };
 };
