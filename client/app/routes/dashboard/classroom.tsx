@@ -91,7 +91,7 @@ const ClassroomPage = () => {
     <section className="p-3">
       <div className="flex items-center gap-2">
         <Button variant={"ghost"} asChild>
-          <Link to={"/dashboard"}>
+          <Link to={"/dashboard/classrooms"}>
             <ArrowLeftIcon />
           </Link>
         </Button>
@@ -209,18 +209,46 @@ const ClassroomPage = () => {
               </Link>
             </Button>
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between gap-1">
-              <p>#1 les boucles</p>
-              <div className="flex gap-2">
-                <Button variant={"outline"}>
-                  <BarChartIcon />
-                </Button>
-                <Button variant={"outline"}>
-                  <Pencil2Icon />
-                </Button>
+          <CardContent className="flex flex-col gap-2">
+            {data.exercises && data.exercises.length >= 1 ? (
+              data.exercises.map((exercise) => {
+                return (
+                  <div
+                    className="flex items-center justify-between gap-1"
+                    key={exercise.id}
+                  >
+                    <p>{exercise.name}</p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant={"outline"}
+                        onClick={() => "TODO: create stats for exercise"}
+                      >
+                        <BarChartIcon />
+                      </Button>
+                      <Button asChild variant={"outline"}>
+                        <Link to={`exercises/${exercise.id}/edit`}>
+                          <Pencil2Icon />
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="w-full flex flex-col items-center justify-center">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <QuestionMarkCircledIcon className="h-5 w-5" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Utiliser le "+" en haut à droite.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <p>Il semblerais qu'il n'y ai aucun exercise.</p>
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
       </div>
