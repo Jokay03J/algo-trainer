@@ -11,8 +11,9 @@ export const routes: RouteConfig = [
         index("routes/dashboard/classrooms.tsx"),
         route(":id", "routes/dashboard/classroom.tsx"),
         route(":id/edit", "routes/dashboard/classroom/edit.tsx"),
-        ...prefix(":id/exercises", [
+        ...prefix(":classroomId/exercises", [
           route("new", "routes/dashboard/classroom/exercises/new.tsx"),
+          route(":id/edit", "routes/dashboard/classroom/exercises/edit.tsx"),
         ]),
       ]),
     ]),
