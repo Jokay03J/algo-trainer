@@ -42,6 +42,7 @@ export default class ClassroomsController {
     if (!classroom) throw new Error('Not found')
     await classroom.load('author')
     await classroom.load('students')
+    await classroom.load('exercises')
     return classroom
   }
 

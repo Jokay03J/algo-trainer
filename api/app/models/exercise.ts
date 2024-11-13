@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon'
 import { BaseModel, beforeCreate, column, hasOne, manyToMany } from '@adonisjs/lucid/orm'
-import { randomUUID } from 'node:crypto'
 import User from './user.js'
 import type { HasOne, ManyToMany } from '@adonisjs/lucid/types/relations'
-import Exercise from './exercise.js'
+import { randomUUID } from 'node:crypto'
+import Classroom from './classroom.js'
 
-export default class Classroom extends BaseModel {
+export default class Exercise extends BaseModel {
   @column({ isPrimary: true })
   declare id: string
 
@@ -13,16 +13,24 @@ export default class Classroom extends BaseModel {
   declare name: string
 
   @column()
+  declare instructions: string
+
+  @column()
+  declare expected: string
+
+  @column()
+  declare language: string
+
+  @column()
   declare authorId: string
 
-  @hasOne(() => User, { localKey: 'authorId', foreignKey: 'id' })
+  @hasOne(() => User, {
+    foreignKey: 'authorId',
+  })
   declare author: HasOne<typeof User>
 
-  @manyToMany(() => User)
-  declare students: ManyToMany<typeof User>
-
-  @manyToMany(() => Exercise, { pivotTable: 'classroom_exercises' })
-  declare exercises: ManyToMany<typeof Exercise>
+  @manyToMany(() => Classroom, { pivotTable: 'classroom_exercises' })
+  declare classrooms: ManyToMany<typeof Classroom>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -31,7 +39,7 @@ export default class Classroom extends BaseModel {
   declare updatedAt: DateTime
 
   @beforeCreate()
-  public static async createUUID(model: Classroom) {
+  public static async createUUID(model: Exercise) {
     model.id = randomUUID()
   }
 }
