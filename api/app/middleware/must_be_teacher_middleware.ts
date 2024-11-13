@@ -9,7 +9,6 @@ export default class MustBeTeacherMiddleware {
     /**
      * Call next method in the pipeline and return its output
      */
-    const output = await next()
-    return output
+    return next()
   }
 }
