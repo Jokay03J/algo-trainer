@@ -20,17 +20,18 @@ export default class AuthController {
 
     const { avatarUrl, email, id, name, nickName } = await gh.user()
 
-    const user = await User.updateOrCreate(
-      { email },
-      {
+    let user = await User.findBy('email', email)
+
+    if (!user) {
+      user = await User.create({
         name,
         nickName,
         avatar: avatarUrl,
         email,
         githubId: id,
         type: 'STUDENT',
-      }
-    )
+      })
+    }
 
     const token = await User.accessTokens.create(user)
     return { token, user }
