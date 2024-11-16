@@ -32,6 +32,7 @@ import {
 } from "~/components/ui/tooltip";
 import { useGetClassrooms } from "~/hooks/useGetClassrooms";
 import { useNewClassroom } from "~/hooks/useNewClassroom";
+import { isTeacher } from "~/libs/isTeacher";
 
 const newClassroomFormSchema = z.object({
   name: z.string().min(3).max(255),
@@ -74,7 +75,7 @@ const Classrooms = () => {
     <section className="p-3">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Mes classes</h1>
-        <Dialog>
+        {isTeacher() && <Dialog>
           <Button variant={"outline"} asChild>
             <DialogTrigger>
               <PlusIcon />
@@ -109,7 +110,7 @@ const Classrooms = () => {
               </form>
             </Form>
           </DialogContent>
-        </Dialog>
+        </Dialog>}
       </div>
       <div className="flex flex-wrap mt-2 gap-2">
         {data!.map((classroom) => {
