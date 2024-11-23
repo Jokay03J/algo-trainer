@@ -9,19 +9,28 @@ import {
   updateClassroomValidator,
 } from '#validators/classroom'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
 export default class ClassroomsController {
   /**
    * Display a list of resource
    */
   async index({ auth }: HttpContext) {
-    const classroomsQuery = Classroom.query().preload('students')
+    if (auth.user!.type === 'TEACHER') {
+      const classroomsQuery = Classroom.query().preload('students')
 
-    if (auth.user?.type === 'TEACHER') classroomsQuery.where('author_id', auth.user?.id!)
+      if (auth.user?.type === 'TEACHER') classroomsQuery.where('author_id', auth.user?.id!)
 
-    const classrooms = await classroomsQuery.exec()
+      const classrooms = await classroomsQuery.exec()
 
-    return classrooms
+      return classrooms
+    }
+
+    const query = await db
+      .from('classroom_user')
+      .join('classrooms', 'classrooms.id', '=', 'classroom_user.classroom_id')
+      .exec()
+    return query
   }
 
   /**
