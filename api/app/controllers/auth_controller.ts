@@ -31,6 +31,14 @@ export default class AuthController {
         githubId: id,
         type: 'STUDENT',
       })
+    } else {
+      user.merge({
+        name,
+        nickName,
+        avatar: avatarUrl,
+        email,
+      })
+      await user.save()
     }
 
     const token = await User.accessTokens.create(user)
