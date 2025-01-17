@@ -2,25 +2,11 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type User = {
-  avatar: string;
-  createdAt: string;
+  avatar?: string;
   email: string;
-  githubId: number;
-  id: string;
-  name: string;
-  nickName: string;
-  type: "STUDENT" | "TEACHER";
-  updatedAt: string;
 };
 
-export type Token = {
-  token: string;
-  name: string | null;
-  abilities: string[];
-  expiredAt: string | null;
-  lastUsedAt: string | null;
-  type: string;
-};
+export type Token = string;
 
 type InitialState = {
   user: User | null;

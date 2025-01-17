@@ -4,14 +4,10 @@
   "main": "index.js",
   "scripts": {
     "client": "cd client && npm run dev",
-    "server": "cd api && npm run dev"
+    "server": "cd server && npm run start:deb"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
-  "workspaces": [
-    "api",
-    "client"
-  ]
+  "description": ""
 }

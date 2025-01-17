@@ -34,7 +34,7 @@ const RootLayout = () => {
                   <Avatar>
                     <AvatarImage src={user.avatar} />
                     <AvatarFallback>
-                      {user.name.slice(0, 2).toUpperCase()}
+                      {user.email.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
@@ -70,7 +70,7 @@ const RootLayout = () => {
           )}
         </ul>
       </div>
-      <div>
+      <div className="p-3">
         <Outlet />
       </div>
     </>

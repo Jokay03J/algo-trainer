@@ -1,0 +1,18 @@
+model User {
+    id        String   @id @default(uuid())
+    email     String   @unique
+    password  String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    role      Roles    @default(STUDENT)
+
+    classrooms Classroom[]
+
+    ClassroomUser ClassroomUser[]
+}
+
+enum Roles {
+    STUDENT
+    TEACHER
+    ADMIN
+}

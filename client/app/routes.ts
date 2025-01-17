@@ -1,7 +1,7 @@
 import type { RouteConfig } from "@react-router/dev/routes";
 import { index, layout, prefix, route } from "@react-router/dev/routes";
 
-export const routes: RouteConfig = [
+const routes: RouteConfig = [
   layout("layouts/root.tsx", [
     index("routes/home.tsx"),
     ...prefix("dashboard", [
@@ -17,10 +17,12 @@ export const routes: RouteConfig = [
         ]),
       ]),
     ]),
-  ]),
-  ...prefix("auth", [
-    route("login", "routes/auth/login.tsx"),
-    route("github/callback", "routes/auth/providers/github.tsx"),
+    ...prefix("auth", [
+      route("login", "routes/auth/login.tsx"),
+      route("github/callback", "routes/auth/providers/github.tsx"),
+    ]),
   ]),
   route("*", "routes/notfound.tsx"),
 ];
+
+export default routes;

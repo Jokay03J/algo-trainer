@@ -32,12 +32,14 @@ import { useForm } from "react-hook-form";
 import { useCreateExercise } from "~/hooks/useCreateExercise";
 import { useNavigate, useParams } from "react-router";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
+import Editor from "~/components/Editor";
 
 const newExerciseSchema = z.object({
   name: z.string().min(3).max(255),
   instructions: z.string(),
   language: z.enum(["javascript", "typescript"]),
   expected: z.string(),
+  defaultCode: z.string(),
 });
 
 const NewExercicePage = () => {
@@ -51,6 +53,7 @@ const NewExercicePage = () => {
       expected: "",
       instructions: "",
       language: "javascript",
+      defaultCode: "",
     },
   });
 
@@ -58,6 +61,7 @@ const NewExercicePage = () => {
     await mutateAsync({ exercise, classroomId: params.id! });
     navigate(`/dashboard/classrooms/${params.id}`);
   };
+
   return (
     <div className="p-2">
       {error && (
@@ -146,6 +150,21 @@ const NewExercicePage = () => {
                           <SelectItem value="typescript">Typescript</SelectItem>
                         </SelectContent>
                       </Select>
+                      <FormDescription>
+                        Une fois crée, vous ne pourrez plus modifer le language
+                        utilisé.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={addExerciseForm.control}
+                  name="defaultCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Code préremplie</FormLabel>
+                      <Editor onChange={field.onChange} value={field.value} />
                       <FormDescription>
                         Une fois crée, vous ne pourrez plus modifer le language
                         utilisé.
