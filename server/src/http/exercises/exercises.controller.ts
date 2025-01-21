@@ -18,6 +18,7 @@ import {
 } from './exercises.dto';
 import { BearerTokenGuard } from 'src/auth/auth.decorators';
 import { User, UserDecorator } from 'src/users/users.decorator';
+import { Roles } from '@prisma/client';
 
 @BearerTokenGuard()
 @Controller('exercises')
@@ -30,6 +31,20 @@ export class ExercisesController {
     @Param() params: ExercisesParamsDTO,
   ) {
     return this.service.findAll(userDecorator, params);
+  }
+
+  @Get(':classroomId/:id')
+  async findOne(
+    @User() userDecorator: UserDecorator,
+    @Param() params: ExercisesRessourceParams,
+  ) {
+    const user = await userDecorator.user();
+    if (
+      user.role !== Roles.TEACHER &&
+      !(await user.existInClassroom(params.classroomId))
+    )
+      throw new UnauthorizedException();
+    return this.service.findOne(params);
   }
 
   @Post(':classroomId')

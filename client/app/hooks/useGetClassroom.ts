@@ -9,7 +9,7 @@ const getClassroom = async (classroomId: string): Promise<Classroom> => {
     `${import.meta.env.VITE_API_URL}/classrooms/${classroomId}`,
     {
       headers: {
-        Authorization: `Bearer ${token.token}`,
+        Authorization: `Bearer ${token}`,
       },
     }
   );
@@ -21,7 +21,7 @@ export const GET_CLASSROOM_KEYS = ["getClassroom"];
 
 export const useGetClassroom = (classroomId: string) => {
   return useQuery({
-    queryKey: GET_CLASSROOM_KEYS,
+    queryKey: [...GET_CLASSROOM_KEYS, classroomId],
     queryFn: () => getClassroom(classroomId),
   });
 };

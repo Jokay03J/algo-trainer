@@ -1,7 +1,8 @@
 export type Exercise = {
   id: string;
   name: string;
-  instructions: string;
-  expected?: string;
+  instruction: string;
+  answer?: string;
+  defaultCode: string;
   language: "javascript" | "typescript";
 };

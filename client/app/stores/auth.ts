@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 export type User = {
   avatar?: string;
   email: string;
+  role: "STUDENT" | "TEACHER" | "ADMIN";
 };
 
 export type Token = string;

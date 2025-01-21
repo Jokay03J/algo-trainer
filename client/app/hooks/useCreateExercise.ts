@@ -16,12 +16,12 @@ const createExercise = async ({
   const { token } = useAuthStore.getState();
   if (!token) throw new Error("Invalid token");
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/classrooms/${classroomId}/exercises`,
+    `${import.meta.env.VITE_API_URL}/exercises/${classroomId}`,
     {
       method: "POST",
       body: JSON.stringify({ ...exercise }),
       headers: {
-        Authorization: `Bearer ${token.token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     }

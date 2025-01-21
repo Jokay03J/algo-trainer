@@ -29,9 +29,7 @@ const EditClassroomPage = () => {
   const navigate = useNavigate();
   const editClassroomForm = useForm<z.infer<typeof updateClassroomSchema>>({
     resolver: zodResolver(updateClassroomSchema),
-    defaultValues: {
-      name: "",
-    },
+    defaultValues: data,
   });
 
   useEffect(() => {
@@ -50,7 +48,9 @@ const EditClassroomPage = () => {
   const handleUpdate = async (
     payload: z.infer<typeof updateClassroomSchema>
   ) => {
-    await updateClassroom({ classroomId: params.id!, payload });
+    if (!params.id) return;
+    await updateClassroom({ classroomId: params.id, payload });
+    navigate(`/dashboard/classrooms/${params.id}`);
   };
 
   return (

@@ -10,7 +10,12 @@ import {
 } from '@nestjs/common';
 import { ClassroomsService } from './classrooms.service';
 import { User, UserDecorator } from 'src/users/users.decorator';
-import { CreateClassroomDto, UpdateClassroomDto } from './classrooms.dto';
+import {
+  CreateClassroomDto,
+  JoinClassroomDto,
+  LeaveClassroomDto,
+  UpdateClassroomDto,
+} from './classrooms.dto';
 import { BearerTokenGuard } from 'src/auth/auth.decorators';
 import { RessourceParams } from 'src/common/ressource-params.dto';
 import { ApiResponse } from '@nestjs/swagger';
@@ -19,6 +24,25 @@ import { ApiResponse } from '@nestjs/swagger';
 @Controller('classrooms')
 export class ClassroomsController {
   constructor(private service: ClassroomsService) {}
+
+  @Post(':id/join')
+  async join(
+    @User() userDecorator: UserDecorator,
+    @Param() params: RessourceParams,
+    @Body() body: JoinClassroomDto,
+  ) {
+    const user = await userDecorator.user();
+    return this.service.join(params.id, user, body);
+  }
+
+  @Delete(':id/join/:joinId')
+  async leave(
+    @User() userDecorator: UserDecorator,
+    @Param() params: LeaveClassroomDto,
+  ) {
+    const user = await userDecorator.user();
+    return this.service.leave(params, user);
+  }
 
   @Get()
   async findMany(@User() userDecorator: UserDecorator) {

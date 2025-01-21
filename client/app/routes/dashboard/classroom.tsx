@@ -154,35 +154,40 @@ const ClassroomPage = () => {
             </Dialog>
           </CardHeader>
           <CardContent>
-            {data.students && data.students.length >= 1 ? (
-              data.students.map((student) => (
-                <div
-                  key={student.id}
-                  className="flex items-center justify-between gap-2"
-                >
-                  <div className="flex items-center gap-2">
-                    <Avatar>
-                      <AvatarImage src={student.avatar} />
-                      <AvatarFallback>
-                        {student.name.slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <p className="text-xl">{student.name}</p>
-                  </div>
-                  <Button
-                    variant={"destructive"}
-                    disabled={removeInviteStudentLoading}
-                    onClick={() =>
-                      removeInviteStudent({
-                        classroomId: params.id!,
-                        studentId: student.id,
-                      })
-                    }
+            {data.classroomStudent && data.classroomStudent.length >= 1 ? (
+              <div className="flex flex-col justify-between gap-2">
+                {data.classroomStudent.map((join) => (
+                  <div
+                    key={join.id}
+                    className="flex items-center justify-between gap-2"
                   >
-                    <TrashIcon />
-                  </Button>
-                </div>
-              ))
+                    <div className="flex items-center gap-2">
+                      <Avatar>
+                        <AvatarImage src={join.user.email} />
+                        <AvatarFallback>
+                          {join.user.email.slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <p className="text-xl">{join.user.email}</p>
+                      <div className="p-1 rounded bg-slate-200">
+                        {join.status}
+                      </div>
+                    </div>
+                    <Button
+                      variant={"destructive"}
+                      disabled={removeInviteStudentLoading}
+                      onClick={() =>
+                        removeInviteStudent({
+                          classroomId: params.id!,
+                          joinId: join.id,
+                        })
+                      }
+                    >
+                      <TrashIcon />
+                    </Button>
+                  </div>
+                ))}
+              </div>
             ) : (
               <div className="w-full flex flex-col items-center justify-center">
                 <TooltipProvider>

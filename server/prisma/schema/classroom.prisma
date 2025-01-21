@@ -7,15 +7,22 @@ model Classroom {
 
     author User @relation(fields: [authorId], references: [id])
 
-    Exercise      Exercise[]
-    ClassroomUser ClassroomUser[]
+    exercises        Exercise[]
+    classroomStudent ClassroomUser[]
 }
 
 model ClassroomUser {
     id          String @id @default(uuid())
+    status      Status @default(PENDING)
     userId      String
     classroomId String
 
     user      User      @relation(fields: [userId], references: [id])
     classroom Classroom @relation(fields: [classroomId], references: [id])
+}
+
+enum Status {
+    PENDING
+    ACCEPTED
+    REJECTED
 }

@@ -16,13 +16,11 @@ const deleteExercise = async ({
   const { token } = useAuthStore.getState();
   if (!token) throw new Error("Invalid token");
   const res = await fetch(
-    `${
-      import.meta.env.VITE_API_URL
-    }/classrooms/${classroomId}/exercises/${exerciseId}`,
+    `${import.meta.env.VITE_API_URL}/exercises/${classroomId}/${exerciseId}`,
     {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token.token}`,
+        Authorization: `Bearer ${token}`,
       },
     }
   );

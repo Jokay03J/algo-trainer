@@ -8,34 +8,33 @@ import { Button } from "~/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { useAuth } from "~/hooks/useAuth";
+import { useRegister } from "~/hooks/useRegister";
 import { useAuthStore } from "~/stores/auth";
 
-export const loginSchema = z.object({
+export const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(4),
 });
 
-const LoginRoute = () => {
-  const form = useForm<z.infer<typeof loginSchema>>({
+const RegisterRoute = () => {
+  const form = useForm<z.infer<typeof registerSchema>>({
     defaultValues: {
       email: "",
       password: "",
     },
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(registerSchema),
   });
-  const { mutateAsync, isError, isPending } = useAuth();
+  const { mutateAsync, isError, isPending } = useRegister();
   const { setToken, setUser } = useAuthStore();
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: z.infer<typeof loginSchema>) => {
+  const handleSubmit = async (data: z.infer<typeof registerSchema>) => {
     const authReponse = await mutateAsync(data);
     setToken(authReponse.access_token);
     setUser(authReponse.user);
@@ -52,7 +51,7 @@ const LoginRoute = () => {
           </AlertDescription>
         </Alert>
       )}
-      <h1 className="text-3xl font-bold">Authentification</h1>
+      <h1 className="text-3xl font-bold">Enregistrement</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <FormField
@@ -87,11 +86,11 @@ const LoginRoute = () => {
         </form>
       </Form>
       <hr className="my-4 w-1/12" />
-      <Button variant={"outline"} onClick={() => navigate("/auth/register")}>
-        S'enregistrer
+      <Button variant={"outline"} onClick={() => navigate("/auth/login")}>
+        S'identifier
       </Button>
     </div>
   );
 };
 
-export default LoginRoute;
+export default RegisterRoute;

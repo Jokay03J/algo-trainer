@@ -19,6 +19,7 @@ const routes: RouteConfig = [
     ]),
     ...prefix("auth", [
       route("login", "routes/auth/login.tsx"),
+      route("register", "routes/auth/register.tsx"),
       route("github/callback", "routes/auth/providers/github.tsx"),
     ]),
   ]),

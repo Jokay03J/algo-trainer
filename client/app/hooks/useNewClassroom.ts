@@ -17,7 +17,7 @@ const createClassroom = async ({
       name,
     }),
     headers: {
-      Authorization: `Bearer ${token.token}`,
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
   });

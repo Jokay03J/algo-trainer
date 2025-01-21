@@ -7,7 +7,7 @@ const getClassrooms = async (): Promise<Classroom[]> => {
   if (!token) throw new Error("Invalid token");
   const res = await fetch(`${import.meta.env.VITE_API_URL}/classrooms`, {
     headers: {
-      Authorization: `Bearer ${token.token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
   if (res.status === 400) throw new Error(res.statusText);

@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
-import { loginSchema } from "~/routes/auth/login";
+import { registerSchema } from "~/routes/auth/register";
 import { User } from "~/stores/auth";
 
 type AuthResponse = {
@@ -9,9 +9,9 @@ type AuthResponse = {
 };
 
 const auth = async (
-  params: z.infer<typeof loginSchema>
+  params: z.infer<typeof registerSchema>
 ): Promise<AuthResponse> => {
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
     method: "POST",
     body: JSON.stringify(params),
     headers: {
@@ -22,4 +22,4 @@ const auth = async (
   return res.json();
 };
 
-export const useAuth = () => useMutation({ mutationFn: auth });
+export const useRegister = () => useMutation({ mutationFn: auth });

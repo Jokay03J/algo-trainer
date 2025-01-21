@@ -31,8 +31,8 @@ import { useUpdateExercise } from "~/hooks/useUpdateExercise";
 
 const editExerciseSchema = z.object({
   name: z.string().min(3).max(255),
-  instructions: z.string(),
-  expected: z.string(),
+  instruction: z.string(),
+  answer: z.string(),
 });
 
 const EditExercise = () => {
@@ -132,17 +132,17 @@ const EditExerciseForm = ({
               <Textarea
                 onChange={(e) =>
                   editExerciseForm.setValue(
-                    "instructions",
+                    "instruction",
                     e.currentTarget.value
                   )
                 }
-                value={editExerciseForm.watch("instructions")}
+                value={editExerciseForm.watch("instruction")}
                 fitContent
               />
             </TabsContent>
             <TabsContent value="preview">
               <MarkdownRenderer>
-                {editExerciseForm.watch("instructions")}
+                {editExerciseForm.watch("instruction")}
               </MarkdownRenderer>
             </TabsContent>
           </CardContent>
@@ -182,7 +182,7 @@ const EditExerciseForm = ({
               />
               <FormField
                 control={editExerciseForm.control}
-                name="expected"
+                name="answer"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Retour attendu</FormLabel>

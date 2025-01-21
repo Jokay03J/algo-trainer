@@ -1,5 +1,12 @@
 import { PickType, PartialType } from '@nestjs/swagger';
-import { IsString, IsUUID, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsString,
+  IsUUID,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
+import { RessourceParams } from 'src/common/ressource-params.dto';
 
 class Classroom {
   @IsUUID()
@@ -16,3 +23,13 @@ class Classroom {
 export class CreateClassroomDto extends PickType(Classroom, ['name']) {}
 
 export class UpdateClassroomDto extends PartialType(CreateClassroomDto) {}
+
+export class JoinClassroomDto {
+  @IsEmail()
+  email: string;
+}
+
+export class LeaveClassroomDto extends PickType(RessourceParams, ['id']) {
+  @IsUUID()
+  joinId: string;
+}

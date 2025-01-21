@@ -1,7 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma/prisma.service';
-import { CreateClassroomDto, UpdateClassroomDto } from './classrooms.dto';
-import { User } from '@prisma/client';
+import {
+  CreateClassroomDto,
+  JoinClassroomDto,
+  UpdateClassroomDto,
+} from './classrooms.dto';
+import { Prisma, User } from '@prisma/client';
 
 @Injectable()
 export class ClassroomsRepository {
@@ -26,9 +34,10 @@ export class ClassroomsRepository {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, include: Prisma.ClassroomInclude = {}) {
     return this.prismaService.classroom.findUnique({
       where: { id },
+      include,
     });
   }
 
@@ -42,6 +51,28 @@ export class ClassroomsRepository {
   async delete(id: string) {
     return this.prismaService.classroom.delete({
       where: { id },
+    });
+  }
+
+  async join(id: string, body: JoinClassroomDto) {
+    const user = await this.prismaService.user.findUnique({
+      where: { email: body.email },
+    });
+    if (!user) throw new NotFoundException();
+    const foundClassroomUser = await this.prismaService.classroomUser.findFirst(
+      {
+        where: { userId: user.id, classroomId: id },
+      },
+    );
+    if (foundClassroomUser) throw new UnprocessableEntityException();
+    return this.prismaService.classroomUser.create({
+      data: { userId: user.id, classroomId: id },
+    });
+  }
+
+  async leave(params: { id: string; joinId: string }) {
+    return this.prismaService.classroomUser.delete({
+      where: { id: params.joinId },
     });
   }
 }

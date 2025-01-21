@@ -21,7 +21,7 @@ const updateClassroom = async ({
       method: "PUT",
       body: JSON.stringify(payload),
       headers: {
-        Authorization: `Bearer ${token.token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     }

@@ -36,9 +36,9 @@ import Editor from "~/components/Editor";
 
 const newExerciseSchema = z.object({
   name: z.string().min(3).max(255),
-  instructions: z.string(),
+  instruction: z.string(),
   language: z.enum(["javascript", "typescript"]),
-  expected: z.string(),
+  answer: z.string(),
   defaultCode: z.string(),
 });
 
@@ -50,16 +50,19 @@ const NewExercicePage = () => {
     resolver: zodResolver(newExerciseSchema),
     defaultValues: {
       name: "",
-      expected: "",
-      instructions: "",
+      answer: "",
+      instruction: "",
       language: "javascript",
       defaultCode: "",
     },
   });
 
   const handleAdd = async (exercise: z.infer<typeof newExerciseSchema>) => {
-    await mutateAsync({ exercise, classroomId: params.id! });
-    navigate(`/dashboard/classrooms/${params.id}`);
+    console.log(params);
+
+    if (!params.classroomId) return;
+    await mutateAsync({ exercise, classroomId: params.classroomId });
+    navigate(`/dashboard/classrooms/${params.classroomId}`);
   };
 
   return (
@@ -88,17 +91,17 @@ const NewExercicePage = () => {
                 <Textarea
                   onChange={(e) =>
                     addExerciseForm.setValue(
-                      "instructions",
+                      "instruction",
                       e.currentTarget.value
                     )
                   }
-                  value={addExerciseForm.watch("instructions")}
+                  value={addExerciseForm.watch("instruction")}
                   fitContent
                 />
               </TabsContent>
               <TabsContent value="preview">
                 <MarkdownRenderer>
-                  {addExerciseForm.watch("instructions")}
+                  {addExerciseForm.watch("instruction")}
                 </MarkdownRenderer>
               </TabsContent>
             </CardContent>
@@ -175,7 +178,7 @@ const NewExercicePage = () => {
                 />
                 <FormField
                   control={addExerciseForm.control}
-                  name="expected"
+                  name="answer"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Retour attendu</FormLabel>

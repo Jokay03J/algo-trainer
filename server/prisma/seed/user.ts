@@ -8,12 +8,26 @@ const main = async () => {
       email: 'root@root.com',
     },
     update: {
-      role: Roles.ADMIN,
+      role: Roles.TEACHER,
       password,
     },
     create: {
-      role: Roles.ADMIN,
+      role: Roles.TEACHER,
       email: 'root@root.com',
+      password,
+    },
+  });
+  await prisma.user.upsert({
+    where: {
+      email: 'root2@root.com',
+    },
+    update: {
+      role: Roles.STUDENT,
+      password,
+    },
+    create: {
+      role: Roles.STUDENT,
+      email: 'root2@root.com',
       password,
     },
   });

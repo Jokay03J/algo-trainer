@@ -6,21 +6,19 @@ import { GET_CLASSROOM_KEYS } from "./useGetClassroom";
 
 const removeInviteStudent = async ({
   classroomId,
-  studentId,
+  joinId,
 }: {
   classroomId: string;
-  studentId: string;
+  joinId: string;
 }): Promise<boolean> => {
   const { token } = useAuthStore.getState();
   if (!token) throw new Error("Invalid token");
   const res = await fetch(
-    `${
-      import.meta.env.VITE_API_URL
-    }/classrooms/${classroomId}/invite/${studentId}`,
+    `${import.meta.env.VITE_API_URL}/classrooms/${classroomId}/join/${joinId}`,
     {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token.token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     }
@@ -32,13 +30,11 @@ const removeInviteStudent = async ({
 export const REMOVE_INVITE_STUDENT_KEYS = ["remove_invite_student"];
 
 export const useRemoveInviteStudent = () => {
-  const { data, mutateAsync, isError, isPending, error } = useMutation({
+  return useMutation({
     mutationKey: REMOVE_INVITE_STUDENT_KEYS,
     mutationFn: removeInviteStudent,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: GET_CLASSROOM_KEYS });
     },
   });
-
-  return { data, isError, isPending, mutateAsync, error };
 };

@@ -13,14 +13,14 @@ const inviteStudent = async ({
   const { token } = useAuthStore.getState();
   if (!token) throw new Error("Invalid token");
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/classrooms/${classroomId}/invite`,
+    `${import.meta.env.VITE_API_URL}/classrooms/${classroomId}/join`,
     {
       method: "POST",
       body: JSON.stringify({
         email,
       }),
       headers: {
-        Authorization: `Bearer ${token.token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     }
